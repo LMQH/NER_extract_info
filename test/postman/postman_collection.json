@@ -1,0 +1,233 @@
+{
+  "info": {
+    "name": "NER Demo API",
+    "description": "NER Demo API测试集合",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "host",
+      "value": "<API网关域名>",
+      "type": "string"
+    },
+    {
+      "key": "base_path",
+      "value": "ner_extract_info",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "健康检查",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://{{host}}/{{base_path}}/api/health",
+          "protocol": "https",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "{{base_path}}",
+            "api",
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "获取模型列表",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://{{host}}/{{base_path}}/api/models",
+          "protocol": "https",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "{{base_path}}",
+            "api",
+            "models"
+          ]
+        }
+      }
+    },
+    {
+      "name": "实体抽取 - qwen-flash（默认模型，推荐）",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Content\": \"广东省坂田街道长坑路西2巷2号202 黄大大 18273778575\",\n  \"model\": \"qwen-flash\"\n}"
+        },
+        "url": {
+          "raw": "https://{{host}}/{{base_path}}/api/extract",
+          "protocol": "https",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "{{base_path}}",
+            "api",
+            "extract"
+          ]
+        },
+        "description": "使用qwen-flash模型进行地址实体抽取（默认模型，推荐使用）\n\n输入格式：地址信息 人名 电话\n输出：结构化地址信息（省份、城市、区县、街道、详细地址、人名、电话）\n\n注意：qwen-flash模型会自动识别地址、人名、电话。"
+      }
+    },
+    {
+      "name": "实体抽取 - 指定mgeo查询成分分析要素识别模型",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Content\": \"广东省坂田街道长坑路西2巷2号202 黄大大 18273778575\",\n  \"model\": \"mgeo_geographic_composition_analysis_chinese_base\"\n}"
+        },
+        "url": {
+          "raw": "https://{{host}}/{{base_path}}/api/extract",
+          "protocol": "https",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "{{base_path}}",
+            "api",
+            "extract"
+          ]
+        },
+        "description": "使用MGeo地理组成分析模型进行地理实体识别和地理组成分析\n\nMGeo模型会自动识别地址中的各个成分，无需额外配置。"
+      }
+    },
+    {
+      "name": "实体抽取 - 指定mgeo地址结构化要素解析模型",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Content\": \"浙江省杭州市余杭区阿里巴巴西溪园区\",\n  \"model\": \"mgeo_geographic_elements_tagging_chinese_base\"\n}"
+        },
+        "url": {
+          "raw": "https://{{host}}/{{base_path}}/api/extract",
+          "protocol": "https",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "{{base_path}}",
+            "api",
+            "extract"
+          ]
+        },
+        "description": "使用MGeo地理要素标注模型进行地址要素解析和地理要素标注\n\n该模型可以将门址地址拆分成独立语义的要素，并对这些要素进行类型识别。\n支持的要素类型：prov(省)、city(市)、district(区/县)、town(街道/镇)、road(路)、road_number(路号)、poi(兴趣点)、house_number(门牌号)、other(其他)\n\nMGeo模型会自动识别地址中的结构化要素，无需额外配置。"
+      }
+    },
+    {
+      "name": "模型测试 - qwen-flash（返回原始输出）",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Content\": \"广东省坂田街道长坑路西2巷2号202 黄大大 18273778575\",\n  \"model\": \"qwen-flash\"\n}"
+        },
+        "url": {
+          "raw": "https://{{host}}/{{base_path}}/api/test-model",
+          "protocol": "https",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "{{base_path}}",
+            "api",
+            "test-model"
+          ]
+        },
+        "description": "模型测试接口 - 直接返回qwen-flash模型的原始输出\n\n该接口与 /api/extract 使用相同的输入格式，但直接返回模型本身的原始输出，\n不进行任何格式转换、地址补全等后处理。\n\n注意：返回的是模型原始输出格式，不同模型的输出格式可能不同。"
+      }
+    },
+    {
+      "name": "模型测试 - mgeo地理组成分析（返回原始输出）",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Content\": \"广东省坂田街道长坑路西2巷2号202 黄大大 18273778575\",\n  \"model\": \"mgeo_geographic_composition_analysis_chinese_base\"\n}"
+        },
+        "url": {
+          "raw": "https://{{host}}/{{base_path}}/api/test-model",
+          "protocol": "https",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "{{base_path}}",
+            "api",
+            "test-model"
+          ]
+        },
+        "description": "模型测试接口 - 直接返回MGeo地理组成分析模型的原始输出\n\n返回格式示例：\n{\n  \"text\": \"...\",\n  \"entities\": {\n    \"output\": [...]\n  }\n}"
+      }
+    },
+    {
+      "name": "模型测试 - mgeo地理要素标注（返回原始输出）",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Content\": \"浙江省杭州市余杭区阿里巴巴西溪园区\",\n  \"model\": \"mgeo_geographic_elements_tagging_chinese_base\"\n}"
+        },
+        "url": {
+          "raw": "https://{{host}}/{{base_path}}/api/test-model",
+          "protocol": "https",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "{{base_path}}",
+            "api",
+            "test-model"
+          ]
+        },
+        "description": "模型测试接口 - 直接返回MGeo地理要素标注模型的原始输出\n\n返回格式示例：\n{\n  \"text\": \"...\",\n  \"entities\": {\n    \"output\": [\n      {\"type\": \"prov\", \"start\": 0, \"end\": 3, \"span\": \"浙江省\"},\n      ...\n    ]\n  }\n}"
+      }
+    }
+  ]
+}
